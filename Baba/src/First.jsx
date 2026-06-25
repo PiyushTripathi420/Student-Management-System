@@ -3,7 +3,7 @@ import axios from 'axios';
 import { UserPlus, Trash2, Edit3, GraduationCap, Users, CheckCircle, Search, User, UserCheck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = ' https://student-management-system-v423.onrender.com/api/students';
+const API_URL = 'https://student-management-system-v423.onrender.com/api/students';
 
 function First() {
   const navigate = useNavigate();
@@ -48,7 +48,9 @@ function First() {
       setFormData({ name: '', rollNo: '', email: '', course: '', gender: 'Male' });
       fetchStudents();
     } catch (err) {
-      alert(err.response?.data?.message || "Something went wrong");
+      //alert(err.response?.data?.message || "something went wrong");
+       console.log("Error Detail:", err.response); // Ye aapko console mein batayega
+  alert("Error: " + (err.response?.data?.message || err.message));
     }
   };
 
