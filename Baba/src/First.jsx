@@ -3,7 +3,7 @@ import axios from 'axios';
 import { UserPlus, Trash2, Edit3, GraduationCap, Users, CheckCircle, Search, User, UserCheck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:5000/api/students';
+const API_URL = ' https://student-management-system-v423.onrender.com/api/students';
 
 function First() {
   const navigate = useNavigate();
