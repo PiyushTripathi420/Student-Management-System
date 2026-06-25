@@ -7,11 +7,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// --- CORRECTION: MongoDB Connection with Connection Guard ---
+const connectDB = async () => {
+  try {
+    // Agar pehle se connected hai, toh naya connection mat banao
+    if (mongoose.connection.readyState >= 1) {
+      return;
+    }
+    // process.env.MONGODB_URI ka use karein (Render dashboard mein set karein)
+    await mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://student:student@cluster0.7i9n62s.mongodb.net/sms_db");
+    console.log('MongoDB Connected Successfully');
+  } catch (err) {
+    console.error('Database connection error:', err);
+  }
+};
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/sms_db')
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log(err));
-
+connectDB();
+// -------------------------------------------------------------
 
 const StudentSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -23,7 +35,7 @@ const StudentSchema = new mongoose.Schema({
 
 const Student = mongoose.model('Student', StudentSchema);
 
-
+// API Routes
 app.get('/api/students', async (req, res) => {
   try {
     const students = await Student.find().sort({ createdAt: -1 });
@@ -52,42 +64,24 @@ app.delete('/api/students/:id', async (req, res) => {
   }
 });
 
-
 app.put('/api/students/:id', async (req, res) => {
   const { id } = req.params;
   const { name, rollNo, email, course, gender } = req.body;
-
   try {
-    
     const updatedStudent = await Student.findByIdAndUpdate(
       id,
       { name, rollNo, email, course, gender },
       { new: true } 
     );
-
     if (!updatedStudent) {
       return res.status(404).json({ message: "Student nahi mila!" });
     }
-
     res.status(200).json({ message: "Student details successfully update ho gayi!", data: updatedStudent });
   } catch (err) {
     console.error("Backend Edit Error:", err);
     res.status(500).json({ message: "Server par update karne mein dikkat aayi." });
   }
 });
-
-
-
-
-
-
-
-
-const MONGO_URI = 'mongodb://localhost:27017/academiaDB';
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB successfully connected.'))
-  .catch((err) => console.log('Database Connection Error:', err));
-
 
 const StatSchema = new mongoose.Schema({
   totalStudents: Number,
@@ -98,7 +92,6 @@ const StatSchema = new mongoose.Schema({
 });
 
 const Stat = mongoose.model('Stat', StatSchema);
-
 
 app.get('/api/dashboard-stats', async (req, res) => {
   try {
@@ -112,7 +105,7 @@ app.get('/api/dashboard-stats', async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is perfectly running on port ${PORT}`);
 });
