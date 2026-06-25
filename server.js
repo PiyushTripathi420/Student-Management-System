@@ -19,7 +19,7 @@ const StudentSchema = new mongoose.Schema({
   rollNo: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   course: { type: String, required: true },
-  gender: {type: String, required:  true},
+  gender: { type: String, required: true },
   status: { type: String, default: 'Active' }
 }, { timestamps: true });
 
