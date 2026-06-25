@@ -15,7 +15,7 @@ const connectDB = async () => {
       return;
     }
     // process.env.MONGODB_URI ka use karein (Render dashboard mein set karein)
-    await mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://student:student@cluster0.7i9n62s.mongodb.net/sms_db");
+    await mongoose.connect("mongodb+srv://student:student@cluster0.7i9n62s.mongodb.net/sms_db");
     console.log('MongoDB Connected Successfully');
   } catch (err) {
     console.error('Database connection error:', err);
